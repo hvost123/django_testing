@@ -5,7 +5,6 @@ from django.conf import settings
 from django.utils import timezone
 
 from conftest import URL
-from news.forms import CommentForm
 
 pytestmark = pytest.mark.django_db
 
@@ -27,13 +26,12 @@ def test_news_count_quantity(client, news_list):
     assert len(object_list) == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-
 def test_comments_order(client, news, comments_list):
     """Проверка сортировки комментариев."""
     response = client.get(URL.detail)
     assert 'news' in response.context
     news = response.context['news']
-    all_comments = list(news.comment_set.all()) 
+    all_comments = list(news.comment_set.all())
     """
     Не выходит избавится от избыточного приведения типа.
     Возможно не верно понимаю комментарий.
