@@ -26,13 +26,9 @@ def test_user_can_create_comment(author_client, author, news, form_data):
     new_comment = Comment.objects.get()
     assertRedirects(response, f'{URL.detail}#comments')
     assert expected_count == comments_count
-    assert all(
-        (
-            new_comment.text == form_data['text'],
-            new_comment.author == author,
-            new_comment.news == news,
-        )
-    )
+    assert new_comment.text == form_data['text']
+    assert new_comment.author == author
+    assert new_comment.news == news
 
 
 @pytest.mark.parametrize('word', BAD_WORDS)
@@ -74,7 +70,8 @@ def test_author_can_edit_comment(
     comment.refresh_from_db()
     comments_count = Comment.objects.count()
     assert expected_count == comments_count
-    assert all((comment.text == NEW_COMMENT_TEXT, comment.author == author))
+    assert comment.text == NEW_COMMENT_TEXT
+    assert comment.author == author
 
 
 def test_user_cant_edit_comment_of_another_user(
@@ -87,4 +84,5 @@ def test_user_cant_edit_comment_of_another_user(
     comments_count = Comment.objects.count()
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert expected_count == comments_count
-    assert all((comment.text == COMMENT_TEXT, comment.author == author))
+    assert comment.text == COMMENT_TEXT
+    assert comment.author == author
